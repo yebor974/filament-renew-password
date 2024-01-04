@@ -23,7 +23,7 @@ class FilamentRenewPasswordServiceProvider extends PackageServiceProvider
                 $command
                     ->publishMigrations()
                     ->copyAndRegisterServiceProviderInApp()
-                    ->askToStarRepoOnGitHub();
+                    ->askToStarRepoOnGitHub('yebor974/filament-renew-password');
             });
     }
 
