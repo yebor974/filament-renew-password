@@ -12,6 +12,7 @@ use Filament\Pages\SimplePage;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password as PasswordRule;
+use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
 
 class RenewPassword extends SimplePage
 {
@@ -30,7 +31,8 @@ class RenewPassword extends SimplePage
 
     public function mount(): void
     {
-        if(!Filament::auth()->user()->needRenewPassword()) {
+        if(!in_array(RenewPasswordContract::class, class_implements(Filament::auth()->user()))
+            || !Filament::auth()->user()->needRenewPassword()) {
             redirect()->intended(Filament::getUrl());
         }
 
@@ -87,7 +89,7 @@ class RenewPassword extends SimplePage
                             ->label(__('filament-renew-password::renew-password.form.password.label'))
                             ->password()
                             ->required()
-                            ->rule(PasswordRule::default()),
+                            ->rules(['different:data.currentPassword', PasswordRule::default()]),
                         TextInput::make('PasswordConfirmation')
                             ->label(__('filament-renew-password::renew-password.form.password-confirmation.label'))
                             ->password()
