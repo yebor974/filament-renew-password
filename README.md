@@ -10,11 +10,11 @@ You can install the package via composer command:
 composer require yebor974/filament-renew-password
 ```
 
-## Usage
+Publish associated vendor and launch migration. This adds new column 'last-renew-password-at' in users table.
 
-First you can publish associated vendor and launch migration. This adds new column 'last-renew-password-at' in users table. 
+## Usage 
 
-Next, implement RenewPasswordContract on your Authenticate Model (User) and define criteria for asking renew password on needRenewPassword function
+First, implement RenewPasswordContract on your Authenticate Model (User) and define criteria for asking renew password on needRenewPassword function
 
 Example for each 90 days :
 ```php
@@ -24,7 +24,7 @@ public function needRenewPassword(): bool
 }
 ```
 
-Finally, register the plugin in your Filament's Panel :
+Next, register the plugin in your Filament's Panel :
 ```php
 use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 
