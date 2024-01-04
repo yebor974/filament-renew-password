@@ -1,6 +1,6 @@
 # Filament plugin to add renew password on panel
 
-This plugin permit to ask user to renew their password according to the last renew or other criteria.
+This plugin permits to ask user to renew their password according to the last renew or other criteria.
 
 ## Install
 
