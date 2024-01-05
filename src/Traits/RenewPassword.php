@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelPackageTools\Traits;
+namespace Yebor974\Filament\RenewPassword\Traits;
 
 use Carbon\Carbon;
 
