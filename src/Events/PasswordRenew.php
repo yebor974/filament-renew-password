@@ -4,7 +4,7 @@ namespace Yebor974\Filament\RenewPassword\Events;
 
 use Illuminate\Queue\SerializesModels;
 
-class PasswordReset
+class PasswordRenew
 {
     use SerializesModels;
 
