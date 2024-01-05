@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\SimplePage;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password as PasswordRule;
@@ -56,6 +57,8 @@ class RenewPassword extends SimplePage
                 'password_hash_' . Filament::getAuthGuard() => $hashPassword,
             ]);
         }
+
+        event(new PasswordReset($user));
 
         Notification::make()
             ->title(__('filament-renew-password::renew-password.notifications.title'))
