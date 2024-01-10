@@ -45,5 +45,5 @@ public function panel(Panel $panel): Panel
 
 And enjoy ! :)
 
-![Screenshot](docs/screenshots/screenshot_1.png)
+![Screenshot](https://raw.githubusercontent.com/yebor974/filament-renew-password/main/docs/screenshots/screenshot_1.png)
 
