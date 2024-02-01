@@ -3,13 +3,14 @@
 namespace Yebor974\Filament\RenewPassword\Traits;
 
 use Carbon\Carbon;
+use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 
 trait RenewPassword
 {
-
     public function needRenewPassword(): bool
     {
-        return Carbon::parse($this->last_renew_password_at ?? $this->created_at)->addDays(config('filament-renew-password.renew_password_days_period')) < now();
-    }
+        $plugin = RenewPasswordPlugin::get();
 
+        return Carbon::parse($this->{$plugin->getTimestampColumn()} ?? $this->created_at)->addDays($plugin->getPasswordExpiresIn()) < now();
+    }
 }

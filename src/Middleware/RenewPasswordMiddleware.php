@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
 use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
+use Yebor974\Filament\RenewPassword\Traits\RenewPassword as RenewPasswordTrait;
 
 class RenewPasswordMiddleware
 {
@@ -15,7 +16,15 @@ class RenewPasswordMiddleware
      */
     public function handle(Request $request, \Closure $next): mixed
     {
-        if ($request->user() && in_array(RenewPasswordContract::class, class_implements($request->user())) && $request->user()->needRenewPassword()) {
+        $user = $request->user();
+
+        if (
+            $user && 
+            (
+                in_array(RenewPasswordContract::class, class_implements($user)) ||
+                in_array(RenewPasswordTrait::class, class_uses($user))
+            ) && $user->needRenewPassword()
+        ) {
             $panel ??= Filament::getCurrentPanel()->getId();
 
             return Redirect::guest(URL::route("filament.{$panel}.auth.password.renew"));
