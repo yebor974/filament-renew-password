@@ -14,7 +14,6 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
-use Yebor974\Filament\RenewPassword\Traits\RenewPassword as RenewPasswordTrait;
 use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 
 class RenewPassword extends SimplePage
