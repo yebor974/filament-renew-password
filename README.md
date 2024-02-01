@@ -68,8 +68,6 @@ Any of the above methods will work. The plugin will use the configuration in the
 
 ## Usage
 
-### Implementing the `RenewPasswordContract` Contract
-
 1. Implement the `RenewPasswordContract` on your Authentication Model (User) and define the criteria for prompting password renewal in the `needRenewPassword` function.
 
 > Example for a 90-day renewal period:
@@ -86,8 +84,13 @@ class User extends Authenticatable implements RenewPasswordContract
 }
 ```
 
-### Using the `RenewPassword` Trait
+Alternatively, you can use the `RenewPassword` trait on your Authentication Model (User). By default, the trait uses the configured column and a 90-day renewal period. You can customize the column name and renewal period by [configuring the plugin](#configuration).
 
-1. Alternatively, you can use the `RenewPassword` trait on your Authentication Model (User). By default, the trait uses the configured column and a 90-day renewal period. You can customize the column name and renewal period by [configuring the plugin](#configuration).
+```php
+class User extends Authenticatable implements RenewPasswordContract
+{
+    use RenewPassword;
+}
+```
 
 Enjoy ! :)

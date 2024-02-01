@@ -38,11 +38,8 @@ class RenewPassword extends SimplePage
         $user = Filament::auth()->user();
 
         if(
-            $user &&
-            (
-                !in_array(RenewPasswordContract::class, class_implements($user)) &&
-                !in_array(RenewPasswordTrait::class, class_uses($user))
-            ) || !$user->needRenewPassword()
+            ! in_array(RenewPasswordContract::class, class_implements($user))
+            || !$user->needRenewPassword()
         ) {
             redirect()->intended(Filament::getUrl());
         }
