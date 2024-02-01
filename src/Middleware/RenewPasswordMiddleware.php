@@ -15,6 +15,7 @@ class RenewPasswordMiddleware
      */
     public function handle(Request $request, \Closure $next): mixed
     {
+        /** @var RenewPasswordContract $user */
         $user = $request->user();
 
         if (
