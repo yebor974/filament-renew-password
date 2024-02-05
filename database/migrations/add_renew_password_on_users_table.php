@@ -10,14 +10,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('last_renew_password_at')->nullable();
+            $table->timestamp(config('filament-renew-password.renew_password_timestamp_column'))->nullable();
         });
     }
 
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('last_renew_password_at');
+            $table->dropColumn(config('filament-renew-password.renew_password_timestamp_column'));
         });
     }
 

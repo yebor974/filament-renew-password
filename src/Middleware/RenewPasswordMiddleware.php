@@ -15,7 +15,14 @@ class RenewPasswordMiddleware
      */
     public function handle(Request $request, \Closure $next): mixed
     {
-        if ($request->user() && in_array(RenewPasswordContract::class, class_implements($request->user())) && $request->user()->needRenewPassword()) {
+        /** @var RenewPasswordContract $user */
+        $user = $request->user();
+
+        if (
+            $user 
+            && in_array(RenewPasswordContract::class, class_implements($user))
+            && $user->needRenewPassword()
+        ) {
             $panel ??= Filament::getCurrentPanel()->getId();
 
             return Redirect::guest(URL::route("filament.{$panel}.auth.password.renew"));

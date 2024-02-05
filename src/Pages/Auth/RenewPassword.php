@@ -14,6 +14,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
+use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 
 class RenewPassword extends SimplePage
 {
@@ -32,8 +33,13 @@ class RenewPassword extends SimplePage
 
     public function mount(): void
     {
-        if(!in_array(RenewPasswordContract::class, class_implements(Filament::auth()->user()))
-            || !Filament::auth()->user()->needRenewPassword()) {
+        /** @var RenewPasswordContract $user */
+        $user = Filament::auth()->user();
+
+        if(
+            ! in_array(RenewPasswordContract::class, class_implements($user))
+            || !$user->needRenewPassword()
+        ) {
             redirect()->intended(Filament::getUrl());
         }
 
@@ -46,10 +52,12 @@ class RenewPassword extends SimplePage
 
         $user = Filament::auth()->user();
 
+        $timestampColumn = RenewPasswordPlugin::get()->getTimestampColumn();
+
         $hashPassword = Hash::make($data['password']);
         $user->forceFill([
             'password' => $hashPassword,
-            'last_renew_password_at' => now()
+            $timestampColumn => now()
         ])->save();
 
         if (request()->hasSession()) {
