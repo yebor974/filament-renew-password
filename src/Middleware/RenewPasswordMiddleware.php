@@ -15,6 +15,9 @@ class RenewPasswordMiddleware
      */
     public function handle(Request $request, \Closure $next): mixed
     {
+        if($request->routeIs(Filament::getCurrentPanel()->generateRouteName('auth.logout')))
+            return $next($request);
+
         /** @var RenewPasswordContract $user */
         $user = $request->user();
 
