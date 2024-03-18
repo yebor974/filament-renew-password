@@ -95,7 +95,7 @@ class RenewPassword extends SimplePage
                             ->label(__('filament-renew-password::renew-password.form.current-password.label'))
                             ->password()
                             ->required()
-                            ->currentPassword(),
+                            ->rule('current_password:'.filament()->getAuthGuard()),
                         TextInput::make('password')
                             ->label(__('filament-renew-password::renew-password.form.password.label'))
                             ->password()
