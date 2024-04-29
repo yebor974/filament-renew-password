@@ -98,12 +98,15 @@ class RenewPassword extends SimplePage
                             ->rule('current_password:'.filament()->getAuthGuard()),
                         TextInput::make('password')
                             ->label(__('filament-renew-password::renew-password.form.password.label'))
+                            ->helperText(trans()->has('filament-renew-password::renew-password.form.password.helps') ? __('filament-renew-password::renew-password.form.password.helps') : null)
                             ->password()
+                            ->revealable(filament()->arePasswordsRevealable())
                             ->required()
                             ->rules(['different:data.currentPassword', PasswordRule::default()]),
                         TextInput::make('PasswordConfirmation')
                             ->label(__('filament-renew-password::renew-password.form.password-confirmation.label'))
                             ->password()
+                            ->revealable(filament()->arePasswordsRevealable())
                             ->required()
                             ->same('password'),
                     ])
