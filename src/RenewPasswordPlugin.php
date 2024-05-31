@@ -52,7 +52,7 @@ class RenewPasswordPlugin implements Plugin
         return $this;
     }
 
-    public function getTimestampColumn(): string | null
+    public function getTimestampColumn(): ?string
     {
         return $this->timestampColumn;
     }
