@@ -2,12 +2,10 @@
 
 namespace Yebor974\Filament\RenewPassword;
 
-use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Yebor974\Filament\RenewPassword\Events\PasswordRenew;
 use Yebor974\Filament\RenewPassword\Pages\Auth\RenewPassword;
 
 class FilamentRenewPasswordServiceProvider extends PackageServiceProvider
@@ -32,10 +30,6 @@ class FilamentRenewPasswordServiceProvider extends PackageServiceProvider
 
     public function packageBooted()
     {
-        Event::listen([
-            PasswordRenew::class,
-        ]);
-
         Livewire::component('yebor974.filament.renew-password.pages.auth.renew-password',RenewPassword::class);
 
         parent::packageBooted();
