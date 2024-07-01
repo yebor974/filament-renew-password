@@ -53,11 +53,13 @@ class RenewPassword extends SimplePage
         $user = Filament::auth()->user();
 
         $timestampColumn = RenewPasswordPlugin::get()->getTimestampColumn();
+        $forceColumn = RenewPasswordPlugin::get()->getForceRenewColumn();
 
         $hashPassword = Hash::make($data['password']);
         $user->forceFill([
             'password' => $hashPassword,
-            $timestampColumn => now()
+            $timestampColumn => now(),
+            $forceColumn => false
         ])->save();
 
         if (request()->hasSession()) {
