@@ -2,7 +2,7 @@
 
 The Filament Renew Password Plugin enhances Filament by prompting users to renew their passwords based on specified criteria.
 
-Two default renewal process are implemented:
+Two default renewal processes are implemented:
 - Recurring Renewal
 - Force Renewal
 
@@ -49,7 +49,7 @@ Filament Renew Password Plugin is designed to work out of the box with minimal c
 
 ### Renewal Process
 
-Two configurations are available and can be used at the same time.
+Two configurations are available and can be used simultaneously.
 
 - Recurring renew process
 
