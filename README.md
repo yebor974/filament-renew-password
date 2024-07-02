@@ -36,9 +36,11 @@ public function panel(Panel $panel): Panel
 ## Configuration
 Filament Renew Password Plugin is designed to work out of the box with minimal configuration. However, you can customize the plugin by publishing the configuration file, changing the environment variables or using the plugin object to override the default settings.
 
+### Renewal Process
+
 Two configurations are available and can be used at the same time.
 
-1. Recurring renew process
+- Recurring renew process
 
 By default, recurring renewal process is disabled.
 
@@ -56,7 +58,7 @@ RenewPasswordPlugin::make()
     ->timestampColumn('your_custom_timestamp_column')
 ```
 
-2. Force renew process
+- Force renew process
 
 The force renewal process can be useful for example when an administrator creates a user. You can send a temporary password to the new user and force them to renew their password at the first login.
 
@@ -96,6 +98,14 @@ RenewPasswordPlugin::make()
     ->timestampColumn('your_custom_timestamp_column')
 ```
 
+### Custom Renew Page
+
+By default, `RenewPassword` simple page is used to ask user to renew it. You can custom it with:
+```php
+RenewPasswordPlugin::make()
+    ->renewPage(CustomRenewPassword::class)
+```
+
 ## Usage
 
 Implement the `RenewPasswordContract` on your Authentication Model (User) and define the criteria for prompting password renewal in the `needRenewPassword` function.
@@ -131,7 +141,21 @@ public function needRenewPassword(): bool
 - Custom criteria
 
 You can make your own criteria by implement `needRenewPassword` function on your Authentication Model (User).
+In this case, you will certainly need to customize the `RenewPassword` simple page described above.
 
 ## Migration V1 to V2
 
-If you have installed version 1 and want to upgrade to version 2 with the force renew process, you need to add a column to your authentication model (User) and declare it as shown in the [Configuration](#configuration) section above.
+The version 2 no longer automatically enables the password renewal process. You must define the processes to use according to the documentation above. 
+Additionally, there are no longer any associated configuration files or .env variables.
+
+To migrate to V2 and enable the recurring renewal process, you need to call the `passwordExpiresIn` function during your plugin initialization with the renewal period in days:
+```php
+RenewPasswordPlugin::make()
+    ->passwordExpiresIn(days: 30)
+```
+
+If you want to add the force renew process, you need to add the force boolean column to your authentication model (User) 
+and declare it as shown in the [Configuration](#configuration) section above.
+```php
+$table->boolean('force_renew_password')->default(false);
+```
