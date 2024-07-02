@@ -5,9 +5,13 @@ namespace Yebor974\Filament\RenewPassword;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Yebor974\Filament\RenewPassword\Middleware\RenewPasswordMiddleware;
+use Yebor974\Filament\RenewPassword\Pages\Auth\RenewPassword;
 
 class RenewPasswordPlugin implements Plugin
 {
+
+    protected string $renewPage = RenewPassword::class;
+
     protected ?int $passwordExpiresIn = null;
 
     protected bool $forceRenewPassword = false;
@@ -29,6 +33,18 @@ class RenewPasswordPlugin implements Plugin
     public function boot(Panel $panel): void
     {
         //
+    }
+
+    public function renewPage(string $renewPage): static
+    {
+        $this->renewPage = $renewPage;
+
+        return $this;
+    }
+
+    public function getRenewPage(): string
+    {
+        return $this->renewPage;
     }
 
     public function timestampColumn(string $timestampColumn = 'last_renew_password_at'): static
