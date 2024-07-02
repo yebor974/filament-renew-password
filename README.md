@@ -2,6 +2,12 @@
 
 The Filament Renew Password Plugin enhances Filament by prompting users to renew their passwords based on specified criteria.
 
+Two default renewal process are implemented:
+- Recurring Renewal
+- Force Renewal
+
+You are free to add your own renewal criteria.
+
 ![Screenshot](https://julienboyer.re/assets/github/filament-renew-password/screenshot_1.png)
 
 ## Installation
