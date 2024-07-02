@@ -12,14 +12,14 @@ The Filament Renew Password Plugin enhances Filament by prompting users to renew
 composer require yebor974/filament-renew-password
 ```
 
-2. Publish the associated vendor files and run the migration, which adds a new column `last_renew_password_at` to the users table.
+2. Publish the associated vendor files and run the migration, which adds new columns `last_renew_password_at` and `force_renew_password` to the users table.
 
 ```bash
 php artisan vendor:publish
 php artisan migrate
 ```
 
-Alternatively, if you don't want to publish the migrations or already have a column in your database for such case, you can skip this step and customize the column name by using any of the configuration methods described in the [Configuration](#configuration) section below.
+Alternatively, if you don't want to publish the migrations or already have columns in your database for such case, you can skip this step and customize the column name by using any of the configuration methods described in the [Configuration](#configuration) section below.
 
 3. Register the plugin in your panel provider:
 
@@ -36,55 +36,64 @@ public function panel(Panel $panel): Panel
 ## Configuration
 Filament Renew Password Plugin is designed to work out of the box with minimal configuration. However, you can customize the plugin by publishing the configuration file, changing the environment variables or using the plugin object to override the default settings.
 
-### Via Plugin Configuration
+Two configurations are available and can be used at the same time.
+
+1. Recurring renew process
+
+By default, recurring renewal is activated. You can disable it by calling the `passwordExpiresIn` function with a null value:
 ```php
-
-// app/Providers/Filament/YourPanelServiceProvider.php
-
 RenewPasswordPlugin::make()
-    ->timestampColumn('password_changed_at')
+    ->passwordExpiresIn(null)
+```
+
+Alternatively, you can customize the number of days (default is 90 days) by calling the `passwordExpiresIn` function:
+```php
+RenewPasswordPlugin::make()
     ->passwordExpiresIn(days: 30)
 ```
+or:
+- by setting `.env` file variable `FILAMENT_RENEW_PASSWORD_DAYS_PERIOD`
+- by setting `renew_password_days_period` attribute in config file `filament-renew-password.php`
 
-### Via Environment Variables
-```env
-// .env
-
-FILAMENT_RENEW_PASSWORD_DAYS_PERIOD=30
-FILAMENT_RENEW_PASSWORD_TIMESTAMP_COLUMN=last_renew_password_at
-```
-
-### Via Configuration File
+By default, the last renewal timestamp column is named last_renew_password_at. If you want to customize it, you can set it using the `timestampColumn` function:
 ```php
-// config/filament-renew-password.php
-
-return [
-    'timestamp_column' => 'password_changed_at',
-    'password_expires_in' => 30,
-];
+RenewPasswordPlugin::make()
+    ->timestampColumn('your_custom_timestamp_column')
+    ->passwordExpiresIn(days: 30)
 ```
+or: 
+- by setting `.env` file variable `FILAMENT_RENEW_PASSWORD_TIMESTAMP_COLUMN`
+- by setting `renew_password_timestamp_column` in config file `filament-renew-password.php`
+
+2. Force renew process
+
+The force renew process can be useful when an administrator creates a user, for example. You can send a temporary password to the new user and force them to renew their password at the first login.
+
+If you want to use the force renew process, you can set it with:
+```php
+RenewPasswordPlugin::make()
+    ->forceRenewPassword()
+```
+
+By default, the force renew boolean column is named `force_renew_password`. If you want to customize it, you can define it with the `forceRenewColumn` function:
+```php
+RenewPasswordPlugin::make()
+    ->forceRenewColumn('your_custom_force_column')
+    ->forceRenewPassword()
+```
+or:
+- by setting `.env` file variable `FILAMENT_RENEW_PASSWORD_FORCE_COLUMN`
+- by setting `renew_password_force_column` in config file `filament-renew-password.php`
 
 Any of the above methods will work. The plugin will use the configuration in the following order of priority: Plugin Configuration, Environment Variables, Configuration File.
 
 ## Usage
 
-1. Implement the `RenewPasswordContract` on your Authentication Model (User) and define the criteria for prompting password renewal in the `needRenewPassword` function.
+Implement the `RenewPasswordContract` on your Authentication Model (User) and define the criteria for prompting password renewal in the `needRenewPassword` function.
 
-> Example for a 90-day renewal period:
-```php
+- Default Trait
 
-class User extends Authenticatable implements RenewPasswordContract
-{
-    ... 
-    
-    public function needRenewPassword(): bool
-    {
-        return Carbon::parse($this->last_renew_password_at ?? $this->created_at)->addDays(90) < now();
-    }
-}
-```
-
-Alternatively, you can use the `RenewPassword` trait on your Authentication Model (User). By default, the trait uses the configured column and a 90-day renewal period. You can customize the column name and renewal period by [configuring the plugin](#configuration).
+You can use the `RenewPassword` trait on your Authentication Model (User).
 
 ```php
 class User extends Authenticatable implements RenewPasswordContract
@@ -93,4 +102,26 @@ class User extends Authenticatable implements RenewPasswordContract
 }
 ```
 
-Enjoy ! :)
+This trait manages recurring renew if activated and/or force renew if activated:
+```php
+public function needRenewPassword(): bool
+{
+    $plugin = RenewPasswordPlugin::get();
+
+    return
+        (
+            !is_null($plugin->getPasswordExpiresIn())
+            && Carbon::parse($this->{$plugin->getTimestampColumn()})->addDays($plugin->getPasswordExpiresIn()) < now()
+        ) || (
+            $plugin->getForceRenewPassword()
+            && $this->{$plugin->getForceRenewColumn()}
+        );
+}
+```
+- Custom criteria
+
+You can make your own criteria by implement `needRenewPassword` function on your Authentication Model (User).
+
+## Migration V1 to V2
+
+If you have installed version 1 and want to upgrade to version 2 with the force renew process, you need to add a column to your authentication model (User) and declare it as shown in the [Configuration](#configuration) section above.
