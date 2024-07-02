@@ -1,6 +1,6 @@
 {
   "name": "yebor974/filament-renew-password",
-  "description": "Package for manage recurring renew password",
+  "description": "Package for manage renew password according to the last renew or other criteria",
   "keywords": [
     "laravel",
     "filament",

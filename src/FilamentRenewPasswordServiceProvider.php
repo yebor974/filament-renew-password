@@ -15,7 +15,6 @@ class FilamentRenewPasswordServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('filament-renew-password')
-            ->hasConfigFile()
             ->hasMigration('add_renew_password_on_users_table')
             ->hasRoute('web')
             ->hasTranslations()

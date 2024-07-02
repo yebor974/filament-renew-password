@@ -13,7 +13,9 @@ Route::name('filament.')->group(function () {
                 ->name($panel->getId() . '.')
                 ->prefix($panel->getPath())
                 ->group(function () use ($panel) {
-                    Route::get('password/renew', \Yebor974\Filament\RenewPassword\Pages\Auth\RenewPassword::class)->name('auth.password.renew');
+                    if($panel->hasPlugin('filament-renew-password')) {
+                        Route::get('password/renew', $panel->getPlugin('filament-renew-password')->getRenewPage())->name('auth.password.renew');
+                    }
                 });
         }
     }

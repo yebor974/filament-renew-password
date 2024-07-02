@@ -5,12 +5,20 @@ namespace Yebor974\Filament\RenewPassword;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Yebor974\Filament\RenewPassword\Middleware\RenewPasswordMiddleware;
+use Yebor974\Filament\RenewPassword\Pages\Auth\RenewPassword;
 
 class RenewPasswordPlugin implements Plugin
 {
+
+    protected string $renewPage = RenewPassword::class;
+
     protected ?int $passwordExpiresIn = null;
 
+    protected bool $forceRenewPassword = false;
+
     protected ?string $timestampColumn = null;
+
+    protected ?string $forceRenewColumn = null;
 
     public function getId(): string
     {
@@ -24,18 +32,39 @@ class RenewPasswordPlugin implements Plugin
 
     public function boot(Panel $panel): void
     {
-        if(! $this->getPasswordExpiresIn()) {
-            $this->passwordExpiresIn(config('filament-renew-password.renew_password_days_period'));
-        }
-
-        if(! $this->getTimestampColumn()) {
-            $this->timestampColumn(config('filament-renew-password.renew_password_timestamp_column'));
-        }
+        //
     }
 
-    public function passwordExpiresIn(int $days): static
+    public function renewPage(string $renewPage): static
+    {
+        $this->renewPage = $renewPage;
+
+        return $this;
+    }
+
+    public function getRenewPage(): string
+    {
+        return $this->renewPage;
+    }
+
+    public function timestampColumn(string $timestampColumn = 'last_renew_password_at'): static
+    {
+        $this->timestampColumn = $timestampColumn;
+
+        return $this;
+    }
+
+    public function getTimestampColumn(): ?string
+    {
+        return $this->timestampColumn;
+    }
+
+    public function passwordExpiresIn(int $days = null): static
     {
         $this->passwordExpiresIn = $days;
+        if(!$this->timestampColumn) {
+            $this->timestampColumn();
+        }
 
         return $this;
     }
@@ -45,16 +74,22 @@ class RenewPasswordPlugin implements Plugin
         return $this->passwordExpiresIn;
     }
 
-    public function timestampColumn(string $column): static
+    public function forceRenewPassword(bool $force = true, string $forceRenewColumn = 'force_renew_password'): static
     {
-        $this->timestampColumn = $column;
+        $this->forceRenewPassword = $force;
+        $this->forceRenewColumn = $forceRenewColumn;
 
         return $this;
     }
 
-    public function getTimestampColumn(): ?string
+    public function getForceRenewPassword(): ?int
     {
-        return $this->timestampColumn;
+        return $this->forceRenewPassword;
+    }
+
+    public function getForceRenewColumn(): ?string
+    {
+        return $this->forceRenewColumn;
     }
 
     public static function make(): static
