@@ -47,7 +47,7 @@ public function panel(Panel $panel): Panel
 ## Configuration
 Filament Renew Password Plugin is designed to work out of the box with minimal configuration. However, you can customize the plugin by publishing the configuration file, changing the environment variables or using the plugin object to override the default settings.
 
-### Renewal Process
+### Renewal Processes
 
 Two configurations are available and can be used simultaneously.
 
