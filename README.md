@@ -40,52 +40,61 @@ Two configurations are available and can be used at the same time.
 
 1. Recurring renew process
 
-By default, recurring renewal is activated. You can disable it by calling the `passwordExpiresIn` function with a null value:
-```php
-RenewPasswordPlugin::make()
-    ->passwordExpiresIn(null)
-```
+By default, recurring renewal process is disabled.
 
-Alternatively, you can customize the number of days (default is 90 days) by calling the `passwordExpiresIn` function:
+To activate recurring renewal process, you have to call `passwordExpiresIn` and define the number of days of recurring:
 ```php
 RenewPasswordPlugin::make()
     ->passwordExpiresIn(days: 30)
 ```
-or:
-- by setting `.env` file variable `FILAMENT_RENEW_PASSWORD_DAYS_PERIOD`
-- by setting `renew_password_days_period` attribute in config file `filament-renew-password.php`
 
-By default, the last renewal timestamp column is named last_renew_password_at. If you want to customize it, you can set it using the `timestampColumn` function:
+This activation automatically manages a last renewal timestamp column named `last_renew_password_at`. You can customize it with the `timestampColumn` function:
+
 ```php
 RenewPasswordPlugin::make()
+    ->passwordExpiresIn(days: 30)
     ->timestampColumn('your_custom_timestamp_column')
-    ->passwordExpiresIn(days: 30)
 ```
-or: 
-- by setting `.env` file variable `FILAMENT_RENEW_PASSWORD_TIMESTAMP_COLUMN`
-- by setting `renew_password_timestamp_column` in config file `filament-renew-password.php`
 
 2. Force renew process
 
-The force renew process can be useful when an administrator creates a user, for example. You can send a temporary password to the new user and force them to renew their password at the first login.
+The force renewal process can be useful for example when an administrator creates a user. You can send a temporary password to the new user and force them to renew their password at the first login.
 
-If you want to use the force renew process, you can set it with:
+By default, force renewal process is disabled.
+
+To activate it, you have to call `forceRenewPassword` function:
 ```php
 RenewPasswordPlugin::make()
     ->forceRenewPassword()
 ```
 
-By default, the force renew boolean column is named `force_renew_password`. If you want to customize it, you can define it with the `forceRenewColumn` function:
+This activation automatically manages a force renew boolean column named `force_renew_password`. If you want to customize it, you can define with second param:
 ```php
 RenewPasswordPlugin::make()
-    ->forceRenewColumn('your_custom_force_column')
+    ->forceRenewPassword(forceRenewColumn: 'your_custom_boolean_force_column')
+```
+
+If you dont want the recurring renewal process but only want the force renewal process with also timestamp column you can add it with:
+```php
+RenewPasswordPlugin::make()
+    ->forceRenewPassword()
+    ->timestampColumn('your_custom_timestamp_column')
+```
+
+> You can of course use both process with this configuration:
+```php
+RenewPasswordPlugin::make()
+    ->passwordExpiresIn(days: 30)
     ->forceRenewPassword()
 ```
-or:
-- by setting `.env` file variable `FILAMENT_RENEW_PASSWORD_FORCE_COLUMN`
-- by setting `renew_password_force_column` in config file `filament-renew-password.php`
 
-Any of the above methods will work. The plugin will use the configuration in the following order of priority: Plugin Configuration, Environment Variables, Configuration File.
+> And with columns customization:
+```php
+RenewPasswordPlugin::make()
+    ->passwordExpiresIn(days: 30)
+    ->forceRenewPassword(forceRenewColumn: 'your_custom_boolean_force_column')
+    ->timestampColumn('your_custom_timestamp_column')
+```
 
 ## Usage
 
@@ -118,6 +127,7 @@ public function needRenewPassword(): bool
         );
 }
 ```
+
 - Custom criteria
 
 You can make your own criteria by implement `needRenewPassword` function on your Authentication Model (User).
