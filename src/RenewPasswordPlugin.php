@@ -31,10 +31,24 @@ class RenewPasswordPlugin implements Plugin
         //
     }
 
-    public function passwordExpiresIn(int $days = null, string $timestampColumn = 'last_renew_password_at'): static
+    public function timestampColumn(string $timestampColumn = 'last_renew_password_at'): static
+    {
+        $this->timestampColumn = $timestampColumn;
+
+        return $this;
+    }
+
+    public function getTimestampColumn(): ?string
+    {
+        return $this->timestampColumn;
+    }
+
+    public function passwordExpiresIn(int $days = null): static
     {
         $this->passwordExpiresIn = $days;
-        $this->timestampColumn = $timestampColumn;
+        if(!$this->timestampColumn) {
+            $this->timestampColumn();
+        }
 
         return $this;
     }
@@ -42,11 +56,6 @@ class RenewPasswordPlugin implements Plugin
     public function getPasswordExpiresIn(): ?int
     {
         return $this->passwordExpiresIn;
-    }
-
-    public function getTimestampColumn(): ?string
-    {
-        return $this->timestampColumn;
     }
 
     public function forceRenewPassword(bool $force = true, string $forceRenewColumn = 'force_renew_password'): static

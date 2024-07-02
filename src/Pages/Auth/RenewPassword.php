@@ -80,12 +80,12 @@ class RenewPassword extends SimplePage
 
         $record->password = $data['password'];
 
-        if(!is_null($plugin->getPasswordExpiresIn())) {
-            $record->{$plugin->getTimestampColumn()} = now();
-        }
-
         if($plugin->getForceRenewPassword()) {
             $record->{$plugin->getForceRenewColumn()} = false;
+        }
+
+        if($plugin->getTimestampColumn()) {
+            $record->{$plugin->getTimestampColumn()} = now();
         }
 
         $record->save();
