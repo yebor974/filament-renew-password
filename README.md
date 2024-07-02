@@ -2,7 +2,7 @@
 
 The Filament Renew Password Plugin enhances Filament by prompting users to renew their passwords based on specified criteria.
 
-![Screenshot](https://raw.githubusercontent.com/yebor974/filament-renew-password/main/docs/screenshots/screenshot_1.png)
+![Screenshot](https://julienboyer.re/assets/github/filament-renew-password/screenshot_1.png)
 
 ## Installation
 
@@ -12,16 +12,21 @@ The Filament Renew Password Plugin enhances Filament by prompting users to renew
 composer require yebor974/filament-renew-password
 ```
 
-2. Publish the associated vendor files and run the migration, which adds new columns `last_renew_password_at` and `force_renew_password` to the users table.
+2. Publish and run the migration, which adds new columns `last_renew_password_at` and `force_renew_password` to the users table.
 
 ```bash
-php artisan vendor:publish
+php artisan vendor:publish --tag="filament-renew-password-migrations"
 php artisan migrate
 ```
 
 Alternatively, if you don't want to publish the migrations or already have columns in your database for such case, you can skip this step and customize the column name by using any of the configuration methods described in the [Configuration](#configuration) section below.
 
-3. Register the plugin in your panel provider:
+3. Optionally, you can publish translations files with:
+```bash
+php artisan vendor:publish --tag="filament-renew-password-translations"
+```
+
+4. Register the plugin in your panel provider:
 
 ```php
 use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
@@ -143,9 +148,9 @@ public function needRenewPassword(): bool
 You can make your own criteria by implement `needRenewPassword` function on your Authentication Model (User).
 In this case, you will certainly need to customize the `RenewPassword` simple page described above.
 
-## Migration V1 to V2
+## Migrate from V1 to V2
 
-The version 2 no longer automatically enables the password renewal process. You must define the processes to use according to the documentation above. 
+The V2 no longer automatically enables the password renewal process. You must define the processes to use according to the documentation above. 
 Additionally, there are no longer any associated configuration files or .env variables.
 
 To migrate to V2 and enable the recurring renewal process, you need to call the `passwordExpiresIn` function during your plugin initialization with the renewal period in days:
