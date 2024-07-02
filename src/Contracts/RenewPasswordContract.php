@@ -6,6 +6,5 @@ interface RenewPasswordContract
 {
 
     public function needRenewPassword(): bool;
-    public function renewPassword(): static;
 
 }

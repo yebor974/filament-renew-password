@@ -4,13 +4,16 @@ namespace Yebor974\Filament\RenewPassword\Pages\Auth;
 
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\SimplePage;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
@@ -48,23 +51,15 @@ class RenewPassword extends SimplePage
 
     public function renew()
     {
+        /** @var Authenticatable & Model $user */
+        $user = Filament::auth()->user();
         $data = $this->form->getState();
 
-        $user = Filament::auth()->user();
-
-        $timestampColumn = RenewPasswordPlugin::get()->getTimestampColumn();
-        $forceColumn = RenewPasswordPlugin::get()->getForceRenewColumn();
-
-        $hashPassword = Hash::make($data['password']);
-        $user->forceFill([
-            'password' => $hashPassword,
-            $timestampColumn => now(),
-            $forceColumn => false
-        ])->save();
+        $this->renewPassword($user, $data);
 
         if (request()->hasSession()) {
             request()->session()->put([
-                'password_hash_' . Filament::getAuthGuard() => $hashPassword,
+                'password_hash_' . Filament::getAuthGuard() => $data['password'],
             ]);
         }
 
@@ -77,6 +72,25 @@ class RenewPassword extends SimplePage
             ->send();
 
         return redirect()->intended(Filament::getUrl());
+    }
+
+    public function renewPassword(Authenticatable & Model $record, array $data): Authenticatable & Model
+    {
+        $plugin = RenewPasswordPlugin::get();
+
+        $record->password = $data['password'];
+
+        if(!is_null($plugin->getPasswordExpiresIn())) {
+            $record->{$plugin->getTimestampColumn()} = now();
+        }
+
+        if($plugin->getForceRenewPassword()) {
+            $record->{$plugin->getForceRenewColumn()} = false;
+        }
+
+        $record->save();
+
+        return $record;
     }
 
     public function form(Form $form): Form
@@ -93,28 +107,46 @@ class RenewPassword extends SimplePage
             'form' => $this->form(
                 $this->makeForm()
                     ->schema([
-                        TextInput::make('currentPassword')
-                            ->label(__('filament-renew-password::renew-password.form.current-password.label'))
-                            ->password()
-                            ->required()
-                            ->rule('current_password:'.filament()->getAuthGuard()),
-                        TextInput::make('password')
-                            ->label(__('filament-renew-password::renew-password.form.password.label'))
-                            ->helperText(trans()->has('filament-renew-password::renew-password.form.password.helps') ? __('filament-renew-password::renew-password.form.password.helps') : null)
-                            ->password()
-                            ->revealable(filament()->arePasswordsRevealable())
-                            ->required()
-                            ->rules(['different:data.currentPassword', PasswordRule::default()]),
-                        TextInput::make('PasswordConfirmation')
-                            ->label(__('filament-renew-password::renew-password.form.password-confirmation.label'))
-                            ->password()
-                            ->revealable(filament()->arePasswordsRevealable())
-                            ->required()
-                            ->same('password'),
+                        $this->getCurrentPasswordFormComponent(),
+                        $this->getPasswordFormComponent(),
+                        $this->getConfirmationPasswordFormComponent()
                     ])
                     ->statePath('data'),
             ),
         ];
+    }
+
+    protected function getCurrentPasswordFormComponent(): Component
+    {
+        return TextInput::make('currentPassword')
+            ->label(__('filament-renew-password::renew-password.form.current-password.label'))
+            ->password()
+            ->required()
+            ->rule('current_password:'.filament()->getAuthGuard());
+    }
+
+    protected function getPasswordFormComponent(): Component
+    {
+        return TextInput::make('password')
+            ->label(__('filament-renew-password::renew-password.form.password.label'))
+            ->helperText(trans()->has('filament-renew-password::renew-password.form.password.helps') ? __('filament-renew-password::renew-password.form.password.helps') : null)
+            ->password()
+            ->revealable(filament()->arePasswordsRevealable())
+            ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
+            ->required()
+            ->rule(PasswordRule::default())
+            ->different('currentPassword')
+            ->same('passwordConfirmation');
+    }
+
+    protected function getConfirmationPasswordFormComponent(): Component
+    {
+        return TextInput::make('passwordConfirmation')
+            ->label(__('filament-renew-password::renew-password.form.password-confirmation.label'))
+            ->password()
+            ->revealable(filament()->arePasswordsRevealable())
+            ->dehydrated(false)
+            ->required();
     }
 
     protected function hasFullWidthFormActions(): bool
@@ -133,7 +165,8 @@ class RenewPassword extends SimplePage
     {
         return Action::make('renew')
             ->label(__('filament-renew-password::renew-password.form.actions.renew.label'))
-            ->submit('renew');
+            ->submit('renew')
+            ->keyBindings(['mod+s']);
     }
 
     public function getTitle(): string | Htmlable

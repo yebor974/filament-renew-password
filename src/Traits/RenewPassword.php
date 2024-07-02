@@ -21,23 +21,4 @@ trait RenewPassword
                 && $this->{$plugin->getForceRenewColumn()}
             );
     }
-
-    public function renewPassword(string $password): static
-    {
-        $plugin = RenewPasswordPlugin::get();
-
-        $this->password = Hash::make($password);
-
-        if(!is_null($plugin->getPasswordExpiresIn())) {
-            $this->{$plugin->getTimestampColumn()} = now();
-        }
-
-        if($plugin->getForceRenewPassword()) {
-            $this->{$plugin->getForceRenewColumn()} = false;
-        }
-
-        $this->save();
-
-        return $this;
-    }
 }
