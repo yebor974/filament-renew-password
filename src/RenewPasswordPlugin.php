@@ -28,22 +28,13 @@ class RenewPasswordPlugin implements Plugin
 
     public function boot(Panel $panel): void
     {
-        if(! $this->getPasswordExpiresIn()) {
-            $this->passwordExpiresIn(config('filament-renew-password.renew_password_days_period'));
-        }
-
-        if(! $this->getTimestampColumn()) {
-            $this->timestampColumn(config('filament-renew-password.renew_password_timestamp_column'));
-        }
-
-        if(! $this->getForceRenewColumn()) {
-            $this->forceRenewColumn(config('filament-renew-password.renew_password_force_column'));
-        }
+        //
     }
 
-    public function passwordExpiresIn(?int $days): static
+    public function passwordExpiresIn(int $days = null, string $timestampColumn = 'last_renew_password_at'): static
     {
         $this->passwordExpiresIn = $days;
+        $this->timestampColumn = $timestampColumn;
 
         return $this;
     }
@@ -53,21 +44,15 @@ class RenewPasswordPlugin implements Plugin
         return $this->passwordExpiresIn;
     }
 
-    public function timestampColumn(string $column): static
-    {
-        $this->timestampColumn = $column;
-
-        return $this;
-    }
-
     public function getTimestampColumn(): ?string
     {
         return $this->timestampColumn;
     }
 
-    public function forceRenewPassword(bool $force = true): static
+    public function forceRenewPassword(bool $force = true, string $forceRenewColumn = 'force_renew_password'): static
     {
         $this->forceRenewPassword = $force;
+        $this->forceRenewColumn = $forceRenewColumn;
 
         return $this;
     }
@@ -75,13 +60,6 @@ class RenewPasswordPlugin implements Plugin
     public function getForceRenewPassword(): ?int
     {
         return $this->forceRenewPassword;
-    }
-
-    public function forceRenewColumn(string $column): static
-    {
-        $this->forceRenewColumn = $column;
-
-        return $this;
     }
 
     public function getForceRenewColumn(): ?string
