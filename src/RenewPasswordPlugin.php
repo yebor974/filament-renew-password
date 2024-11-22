@@ -59,7 +59,7 @@ class RenewPasswordPlugin implements Plugin
         return $this->timestampColumn;
     }
 
-    public function passwordExpiresIn(int $days = null): static
+    public function passwordExpiresIn(?int $days = null): static
     {
         $this->passwordExpiresIn = $days;
         if(!$this->timestampColumn) {
