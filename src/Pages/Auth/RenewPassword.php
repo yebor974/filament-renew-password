@@ -134,7 +134,7 @@ class RenewPassword extends SimplePage
     {
         return TextInput::make('password')
             ->label(__('filament-renew-password::renew-password.form.password.label'))
-            ->helperText(Trans()->has('filament-renew-password::renew-password.form.password.helps') ? __('filament-renew-password::renew-password.form.password.helps') : null)
+            ->helperText(trans()->has('filament-renew-password::renew-password.form.password.helps') ? __('filament-renew-password::renew-password.form.password.helps') : null)
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
