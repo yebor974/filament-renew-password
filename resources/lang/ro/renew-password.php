@@ -5,22 +5,22 @@ return [
     'heading' => 'Este timpul să reînnoiești parola pentru a asigura securitatea contului tău.',
     'form' => [
         'current-password' => [
-            'label' => 'Parola actuală'
+            'label' => 'Parola actuală',
         ],
         'password' => [
-            'label' => 'Parola nouă'
+            'label' => 'Parola nouă',
         ],
         'password-confirmation' => [
-            'label' => 'Confirmă parola nouă'
+            'label' => 'Confirmă parola nouă',
         ],
         'actions' => [
             'renew' => [
-                'label' => 'Reînnoiește'
-            ]
-        ]
+                'label' => 'Reînnoiește',
+            ],
+        ],
     ],
     'notifications' => [
         'title' => 'Reînnoire Parola',
-        'body' => 'Parola a fost reînnoită cu succes!'
-    ]
+        'body' => 'Parola a fost reînnoită cu succes!',
+    ],
 ];

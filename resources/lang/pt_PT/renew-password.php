@@ -5,22 +5,22 @@ return [
     'heading' => 'É necessário actualizar a sua palavra-passe de forma a aumentar a segurança da sua conta.',
     'form' => [
         'current-password' => [
-            'label' => 'Palavra-passe actual'
+            'label' => 'Palavra-passe actual',
         ],
         'password' => [
-            'label' => 'Nova palavra-passe'
+            'label' => 'Nova palavra-passe',
         ],
         'password-confirmation' => [
-            'label' => 'Confirmação de nova palavra-passe'
+            'label' => 'Confirmação de nova palavra-passe',
         ],
         'actions' => [
             'renew' => [
-                'label' => 'Actualizar'
-            ]
-        ]
+                'label' => 'Actualizar',
+            ],
+        ],
     ],
     'notifications' => [
         'title' => 'Actualização de palavra-passe',
-        'body' => 'Palavra-passe actualizada com sucesso!'
-    ]
+        'body' => 'Palavra-passe actualizada com sucesso!',
+    ],
 ];

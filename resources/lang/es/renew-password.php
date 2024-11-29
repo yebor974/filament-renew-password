@@ -5,22 +5,22 @@ return [
     'heading' => 'Es hora de renovar su contraseña para mejorar la seguridad de su cuenta.',
     'form' => [
         'current-password' => [
-            'label' => 'Contraseña Actual'
+            'label' => 'Contraseña Actual',
         ],
         'password' => [
-            'label' => 'Nueva Contraseña'
+            'label' => 'Nueva Contraseña',
         ],
         'password-confirmation' => [
-            'label' => 'Confirmar la nueva contraseña'
+            'label' => 'Confirmar la nueva contraseña',
         ],
         'actions' => [
             'renew' => [
-                'label' => 'Guardar'
-            ]
-        ]
+                'label' => 'Guardar',
+            ],
+        ],
     ],
     'notifications' => [
         'title' => 'Cambiar Contraseña',
-        'body' => 'La contraseña de cambio exitosamente!'
-    ]
+        'body' => 'La contraseña de cambio exitosamente!',
+    ],
 ];
