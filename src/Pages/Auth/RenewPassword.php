@@ -57,23 +57,25 @@ class RenewPassword extends SimplePage
     public function renew()
     {
         try {
+            $this->beginDatabaseTransaction();
+
             /** @var Authenticatable & Model $user */
             $user = Filament::auth()->user();
             $data = $this->form->getState();
 
             $this->renewPassword($user, $data);
 
-            if (Request::hasSession()) {
-                Request::session()->put([
-                    'password_hash_' . Filament::getAuthGuard() => $data['password'],
-                ]);
-            }
-
             $this->commitDatabaseTransaction();
         } catch (\Throwable $exception) {
             $this->rollBackDatabaseTransaction();
 
             throw $exception;
+        }
+
+        if (Request::hasSession()) {
+            Request::session()->put([
+                'password_hash_' . Filament::getAuthGuard() => $data['password'],
+            ]);
         }
 
         event(new PasswordReset($user));
