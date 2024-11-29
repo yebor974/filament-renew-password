@@ -9,22 +9,25 @@ use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Pages\Concerns\InteractsWithFormActions;
+use Filament\Pages\Concerns;
 use Filament\Pages\SimplePage;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
 use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 
+/**
+ * @property Form $form
+ */
 class RenewPassword extends SimplePage
 {
-    use InteractsWithFormActions;
+    use Concerns\CanUseDatabaseTransactions;
+    use Concerns\InteractsWithFormActions;
 
     protected static string $view = 'filament-renew-password::pages.auth.renew-password';
 
@@ -42,24 +45,35 @@ class RenewPassword extends SimplePage
             ! in_array(RenewPasswordContract::class, class_implements($user))
             || ! $user->needRenewPassword()
         ) {
-            Redirect::intended(Filament::getUrl());
+            $this->redirectIntended(Filament::getUrl());
         }
 
         $this->form->fill();
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function renew()
     {
-        /** @var Authenticatable & Model $user */
-        $user = Filament::auth()->user();
-        $data = $this->form->getState();
+        try {
+            /** @var Authenticatable & Model $user */
+            $user = Filament::auth()->user();
+            $data = $this->form->getState();
 
-        $this->renewPassword($user, $data);
+            $this->renewPassword($user, $data);
 
-        if (Request::hasSession()) {
-            Request::session()->put([
-                'password_hash_' . Filament::getAuthGuard() => $data['password'],
-            ]);
+            if (Request::hasSession()) {
+                Request::session()->put([
+                    'password_hash_' . Filament::getAuthGuard() => $data['password'],
+                ]);
+            }
+
+            $this->commitDatabaseTransaction();
+        } catch (\Throwable $exception) {
+            $this->rollBackDatabaseTransaction();
+
+            throw $exception;
         }
 
         event(new PasswordReset($user));
@@ -70,14 +84,16 @@ class RenewPassword extends SimplePage
             ->success()
             ->send();
 
-        return Redirect::intended(Filament::getUrl());
+        $this->redirectIntended(Filament::getUrl());
     }
 
     public function renewPassword(Authenticatable & Model $record, array $data): Authenticatable & Model
     {
         $plugin = RenewPasswordPlugin::get();
 
-        $record->password = $data['password'];
+        $record->forceFill([
+            'password' => $data['password'],
+        ]);
 
         if ($plugin->getForceRenewPassword()) {
             $record->{$plugin->getForceRenewColumn()} = false;
@@ -94,25 +110,13 @@ class RenewPassword extends SimplePage
 
     public function form(Form $form): Form
     {
-        return $form;
-    }
-
-    /**
-     * @return array<int | string, string | Form>
-     */
-    protected function getForms(): array
-    {
-        return [
-            'form' => $this->form(
-                $this->makeForm()
-                    ->schema([
-                        $this->getCurrentPasswordFormComponent(),
-                        $this->getPasswordFormComponent(),
-                        $this->getConfirmationPasswordFormComponent(),
-                    ])
-                    ->statePath('data'),
-            ),
-        ];
+        return $form
+            ->schema([
+                $this->getCurrentPasswordFormComponent(),
+                $this->getPasswordFormComponent(),
+                $this->getConfirmationPasswordFormComponent(),
+            ])
+            ->statePath('data');
     }
 
     protected function getCurrentPasswordFormComponent(): Component

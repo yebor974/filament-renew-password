@@ -12,6 +12,8 @@ class RenewPasswordMiddleware
 {
     /**
      * Handle an incoming request.
+     *
+     * @throws \Exception
      */
     public function handle(Request $request, \Closure $next): mixed
     {
@@ -19,7 +21,7 @@ class RenewPasswordMiddleware
             return $next($request);
         }
 
-        /** @var RenewPasswordContract $user */
+        /** @var RenewPasswordContract|null $user */
         $user = $request->user();
 
         if (
@@ -27,9 +29,9 @@ class RenewPasswordMiddleware
             && in_array(RenewPasswordContract::class, class_implements($user))
             && $user->needRenewPassword()
         ) {
-            $panel ??= Filament::getCurrentPanel()->getId();
+            $panelId = Filament::getCurrentPanel()->getId();
 
-            return Redirect::guest(URL::route("filament.{$panel}.auth.password.renew"));
+            return Redirect::guest(URL::route("filament.{$panelId}.auth.password.renew"));
         }
 
         return $next($request);

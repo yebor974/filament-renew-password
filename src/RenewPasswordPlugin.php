@@ -81,7 +81,7 @@ class RenewPasswordPlugin implements Plugin
         return $this;
     }
 
-    public function getForceRenewPassword(): ?int
+    public function getForceRenewPassword(): bool
     {
         return $this->forceRenewPassword;
     }
@@ -98,6 +98,9 @@ class RenewPasswordPlugin implements Plugin
 
     public static function get(): static
     {
-        return filament(app(static::class)->getId());
+        /** @var static $plugin */
+        $plugin = filament(app(static::class)->getId());
+
+        return $plugin;
     }
 }
