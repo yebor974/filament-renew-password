@@ -3,7 +3,6 @@
 namespace Yebor974\Filament\RenewPassword\Traits;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Hash;
 use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 
 trait RenewPassword
@@ -14,7 +13,7 @@ trait RenewPassword
 
         return
             (
-                !is_null($plugin->getPasswordExpiresIn())
+                ! is_null($plugin->getPasswordExpiresIn())
                 && Carbon::parse($this->{$plugin->getTimestampColumn()})->addDays($plugin->getPasswordExpiresIn()) < now()
             ) || (
                 $plugin->getForceRenewPassword()

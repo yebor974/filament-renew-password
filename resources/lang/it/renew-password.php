@@ -5,22 +5,22 @@ return [
     'heading' => 'Per motivi di sicurezza, è opportuno aggiornare la tua password.',
     'form' => [
         'current-password' => [
-            'label' => 'Password attuale'
+            'label' => 'Password attuale',
         ],
         'password' => [
-            'label' => 'Nuova password'
+            'label' => 'Nuova password',
         ],
         'password-confirmation' => [
-            'label' => 'Conferma nuova password'
+            'label' => 'Conferma nuova password',
         ],
         'actions' => [
             'renew' => [
-                'label' => 'Aggiorna'
-            ]
-        ]
+                'label' => 'Aggiorna',
+            ],
+        ],
     ],
     'notifications' => [
         'title' => 'Ottimo!',
-        'body' => 'La tua password è stata aggiornata con successo.'
-    ]
+        'body' => 'La tua password è stata aggiornata con successo.',
+    ],
 ];

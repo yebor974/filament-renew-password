@@ -10,7 +10,6 @@ use Yebor974\Filament\RenewPassword\Pages\Auth\RenewPassword;
 
 class FilamentRenewPasswordServiceProvider extends PackageServiceProvider
 {
-
     public function configurePackage(Package $package): void
     {
         $package
@@ -19,7 +18,7 @@ class FilamentRenewPasswordServiceProvider extends PackageServiceProvider
             ->hasRoute('web')
             ->hasTranslations()
             ->hasViews()
-            ->hasInstallCommand(function(InstallCommand $command) {
+            ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->publishMigrations()
                     ->copyAndRegisterServiceProviderInApp()
@@ -29,7 +28,7 @@ class FilamentRenewPasswordServiceProvider extends PackageServiceProvider
 
     public function packageBooted()
     {
-        Livewire::component('yebor974.filament.renew-password.pages.auth.renew-password',RenewPassword::class);
+        Livewire::component('yebor974.filament.renew-password.pages.auth.renew-password', RenewPassword::class);
 
         parent::packageBooted();
     }

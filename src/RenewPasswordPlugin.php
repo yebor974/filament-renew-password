@@ -9,7 +9,6 @@ use Yebor974\Filament\RenewPassword\Pages\Auth\RenewPassword;
 
 class RenewPasswordPlugin implements Plugin
 {
-
     protected string $renewPage = RenewPassword::class;
 
     protected ?int $passwordExpiresIn = null;
@@ -62,7 +61,7 @@ class RenewPasswordPlugin implements Plugin
     public function passwordExpiresIn(?int $days = null): static
     {
         $this->passwordExpiresIn = $days;
-        if(!$this->timestampColumn) {
+        if (! $this->timestampColumn) {
             $this->timestampColumn();
         }
 
