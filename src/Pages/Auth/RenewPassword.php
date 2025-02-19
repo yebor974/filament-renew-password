@@ -38,11 +38,12 @@ class RenewPassword extends SimplePage
 
     public function mount(): void
     {
-        /** @var RenewPasswordContract $user */
+        /** @var RenewPasswordContract|null $user */
         $user = Filament::auth()->user();
 
         if (
-            ! in_array(RenewPasswordContract::class, class_implements($user))
+            ! $user
+            || ! in_array(RenewPasswordContract::class, class_implements($user))
             || ! $user->needRenewPassword()
         ) {
             $this->redirectIntended(Filament::getUrl());
