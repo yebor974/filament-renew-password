@@ -117,6 +117,14 @@ RenewPasswordPlugin::make()
     ->renewPage(CustomRenewPassword::class)
 ```
 
+### Route URI
+
+`'password/renew'` is the default route URI when being asked to change passwords. For translation purposes, you may want to customize this. You can do this with the following configuration:
+```php
+RenewPasswordPlugin::make()
+    ->routeUri('wachtwoord/vernieuwen')
+```
+
 ## Usage
 
 Implement the `RenewPasswordContract` on your Authentication Model (User) and define the criteria for prompting password renewal in the `needRenewPassword` function.

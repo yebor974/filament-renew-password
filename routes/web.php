@@ -14,7 +14,8 @@ Route::name('filament.')->group(function () {
                 ->prefix($panel->getPath())
                 ->group(function () use ($panel) {
                     if ($panel->hasPlugin('filament-renew-password')) {
-                        Route::get('password/renew', $panel->getPlugin('filament-renew-password')->getRenewPage())->name('auth.password.renew');
+                        $plugin = $panel->getPlugin('filament-renew-password');
+                        Route::get($plugin->getRouteUri(), $plugin->getRenewPage())->name('auth.password.renew');
                     }
                 });
         }

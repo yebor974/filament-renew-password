@@ -19,6 +19,8 @@ class RenewPasswordPlugin implements Plugin
 
     protected ?string $forceRenewColumn = null;
 
+    protected string $routeUri = 'password/renew';
+
     public function getId(): string
     {
         return 'filament-renew-password';
@@ -89,6 +91,18 @@ class RenewPasswordPlugin implements Plugin
     public function getForceRenewColumn(): ?string
     {
         return $this->forceRenewColumn;
+    }
+
+    public function routeUri(string $routeUri): static
+    {
+        $this->routeUri = $routeUri;
+
+        return $this;
+    }
+
+    public function getRouteUri(): string
+    {
+        return $this->routeUri;
     }
 
     public static function make(): static
