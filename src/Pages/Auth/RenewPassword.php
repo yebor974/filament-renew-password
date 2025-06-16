@@ -15,6 +15,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\Rules\Password as PasswordRule;
@@ -140,7 +141,14 @@ class RenewPassword extends SimplePage
             ->revealable(filament()->arePasswordsRevealable())
             ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
             ->required()
-            ->rule(PasswordRule::default())
+             ->rule([
+                'required',
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised(),
+            ])
             ->different('currentPassword')
             ->same('passwordConfirmation');
     }
