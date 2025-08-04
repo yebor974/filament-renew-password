@@ -1,5 +1,9 @@
 # Filament Renew Password Plugin
 
+![Filament v3](https://img.shields.io/badge/Filament-v3--stable-success?logo=filament)
+![Filament v4 beta support](https://img.shields.io/badge/Filament-v4--beta--support-orange?logo=filament)
+![License](https://img.shields.io/github/license/yebor974/filament-renew-password)
+
 The Filament Renew Password Plugin enhances Filament by prompting users to renew their passwords based on specified criteria.
 
 Two default renewal processes are implemented:
@@ -14,9 +18,19 @@ You are free to add your own renewal criteria.
 
 1. Install the package using the composer command:
 
-```bash
-composer require yebor974/filament-renew-password
-```
+> ✅ **Filament v4** compatibility is available in **version 3.x** of this plugin (currently in beta).
+>
+> ```bash
+> composer require yebor974/filament-renew-password
+> ```
+> 
+> ✅ If you are using **Filament v3**, please install **version 2.x**:
+> ```bash
+> composer require yebor974/filament-renew-password:^2.0
+> ```
+>
+> 🚧 **Version 3.x** is compatible with Filament v4 and is under active development. Some features might evolve.
+
 
 2. Publish and run the migration, which adds new columns `last_renew_password_at` and `force_renew_password` to the users table.
 
@@ -161,20 +175,3 @@ public function needRenewPassword(): bool
 
 You can make your own criteria by implement `needRenewPassword` function on your Authentication Model (User).
 In this case, you will certainly need to customize the `RenewPassword` simple page described above.
-
-## Migrate from V1 to V2
-
-The V2 no longer automatically enables the password renewal process. You must define the processes to use according to the documentation above. 
-Additionally, there are no longer any associated configuration files or .env variables.
-
-To migrate to V2 and enable the recurring renewal process, you need to call the `passwordExpiresIn` function during your plugin initialization with the renewal period in days:
-```php
-RenewPasswordPlugin::make()
-    ->passwordExpiresIn(days: 30)
-```
-
-If you want to add the force renew process, you need to add the force boolean column to your authentication model (User) 
-and declare it as shown in the [Configuration](#configuration) section above.
-```php
-$table->boolean('force_renew_password')->default(false);
-```

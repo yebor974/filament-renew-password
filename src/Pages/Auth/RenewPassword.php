@@ -5,12 +5,15 @@ namespace Yebor974\Filament\RenewPassword\Pages\Auth;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns;
 use Filament\Pages\SimplePage;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\EmbeddedSchema;
+use Filament\Schemas\Components\Form;
+use Filament\Schemas\Schema;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Support\Htmlable;
@@ -22,14 +25,14 @@ use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
 use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 
 /**
- * @property Form $form
+ * @property-read Schema $form
  */
 class RenewPassword extends SimplePage
 {
     use Concerns\CanUseDatabaseTransactions;
     use Concerns\InteractsWithFormActions;
 
-    protected static string $view = 'filament-renew-password::pages.auth.renew-password';
+    protected string $view = 'filament-renew-password::pages.auth.renew-password';
 
     /**
      * @var array<string, mixed> | null
@@ -55,7 +58,7 @@ class RenewPassword extends SimplePage
     /**
      * @throws \Throwable
      */
-    public function renew()
+    public function renew(): void
     {
         try {
             $this->beginDatabaseTransaction();
@@ -73,7 +76,7 @@ class RenewPassword extends SimplePage
             throw $exception;
         }
 
-        if (Request::hasSession()) {
+        if (request()->hasSession() && array_key_exists('password', $data)) {
             Request::session()->put([
                 'password_hash_' . Filament::getAuthGuard() => $data['password'],
             ]);
@@ -111,10 +114,10 @@ class RenewPassword extends SimplePage
         return $record;
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 $this->getCurrentPasswordFormComponent(),
                 $this->getPasswordFormComponent(),
                 $this->getConfirmationPasswordFormComponent(),
@@ -173,6 +176,27 @@ class RenewPassword extends SimplePage
             ->label(__('filament-renew-password::renew-password.form.actions.renew.label'))
             ->submit('renew')
             ->keyBindings(['mod+s']);
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                $this->getFormContentComponent(),
+            ]);
+    }
+
+    public function getFormContentComponent(): Component
+    {
+        return Form::make([EmbeddedSchema::make('form')])
+            ->id('form')
+            ->livewireSubmitHandler('renew')
+            ->footer([
+                Actions::make($this->getFormActions())
+                    ->alignment($this->getFormActionsAlignment())
+                    ->fullWidth($this->hasFullWidthFormActions())
+                    ->sticky(false),
+            ]);
     }
 
     public function getTitle(): string | Htmlable
