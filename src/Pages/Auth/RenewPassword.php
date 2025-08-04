@@ -18,7 +18,6 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\Rules\Password as PasswordRule;
@@ -59,7 +58,7 @@ class RenewPassword extends SimplePage
     /**
      * @throws \Throwable
      */
-    public function renew()
+    public function renew(): void
     {
         try {
             $this->beginDatabaseTransaction();

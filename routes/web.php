@@ -2,6 +2,7 @@
 
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Route;
+use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 
 Route::name('filament.')->group(function () {
     foreach (Filament::getPanels() as $panel) {
@@ -14,6 +15,7 @@ Route::name('filament.')->group(function () {
                 ->prefix($panel->getPath())
                 ->group(function () use ($panel) {
                     if ($panel->hasPlugin('filament-renew-password')) {
+                        /** @var RenewPasswordPlugin $plugin */
                         $plugin = $panel->getPlugin('filament-renew-password');
                         Route::get($plugin->getRouteUri(), $plugin->getRenewPage())->name('auth.password.renew');
                     }
