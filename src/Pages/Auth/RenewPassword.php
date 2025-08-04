@@ -5,12 +5,11 @@ namespace Yebor974\Filament\RenewPassword\Pages\Auth;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns;
 use Filament\Pages\SimplePage;
+use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -23,7 +22,7 @@ use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
 use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 
 /**
- * @property Form $form
+ * @property-read Schema $form
  */
 class RenewPassword extends SimplePage
 {
