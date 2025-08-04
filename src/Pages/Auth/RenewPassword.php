@@ -29,7 +29,7 @@ class RenewPassword extends SimplePage
     use Concerns\CanUseDatabaseTransactions;
     use Concerns\InteractsWithFormActions;
 
-    protected static string $view = 'filament-renew-password::pages.auth.renew-password';
+    protected string $view = 'filament-renew-password::pages.auth.renew-password';
 
     /**
      * @var array<string, mixed> | null
@@ -73,7 +73,7 @@ class RenewPassword extends SimplePage
             throw $exception;
         }
 
-        if (Request::hasSession()) {
+        if (request()->hasSession() && array_key_exists('password', $data)) {
             Request::session()->put([
                 'password_hash_' . Filament::getAuthGuard() => $data['password'],
             ]);
