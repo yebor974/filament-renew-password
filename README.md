@@ -18,7 +18,7 @@ You are free to add your own renewal criteria.
 
 1. Install the package using the composer command:
 
-> ✅ **Filament v4** compatibility is available in **version 3.x** of this plugin (currently in beta).
+> ✅ **Filament v4 and v5** compatibility are available in **version 3.x** of this plugin (currently in beta).
 >
 > ```bash
 > composer require yebor974/filament-renew-password
@@ -28,9 +28,6 @@ You are free to add your own renewal criteria.
 > ```bash
 > composer require yebor974/filament-renew-password:^2.0
 > ```
->
-> 🚧 **Version 3.x** is compatible with Filament v4 and is under active development. Some features might evolve.
-
 
 2. Publish and run the migration, which adds new columns `last_renew_password_at` and `force_renew_password` to the users table.
 
