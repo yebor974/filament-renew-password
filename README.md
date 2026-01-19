@@ -1,7 +1,8 @@
 # Filament Renew Password Plugin
 
 ![Filament v3](https://img.shields.io/badge/Filament-v3--stable-success?logo=filament)
-![Filament v4 beta support](https://img.shields.io/badge/Filament-v4--beta--support-orange?logo=filament)
+![Filament v4](https://img.shields.io/badge/Filament-v4--stable-success?logo=filament)
+![Filament v5](https://img.shields.io/badge/Filament-v5--stable-success?logo=filament)
 ![License](https://img.shields.io/github/license/yebor974/filament-renew-password)
 
 The Filament Renew Password Plugin enhances Filament by prompting users to renew their passwords based on specified criteria.
@@ -18,7 +19,7 @@ You are free to add your own renewal criteria.
 
 1. Install the package using the composer command:
 
-> ✅ **Filament v4 and v5** compatibility are available in **version 3.x** of this plugin (currently in beta).
+> ✅ **Filament v4 and v5** compatibility are available in **version 3.x** of this plugin.
 >
 > ```bash
 > composer require yebor974/filament-renew-password
